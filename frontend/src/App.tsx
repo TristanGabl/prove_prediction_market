@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Hero, { type Mode } from './Hero'
 import { BrowseBar, BrowseList, BrowseStats, useBrowse } from './Browse'
 import { AccountBar, AccountContent, AccountStats, useAccount } from './Account'
+import MarketPage from './Market'
 
 type Rect = { x: number; y: number; w: number; h: number }
 type Layout = {
@@ -149,6 +150,30 @@ function App() {
     bubbles.sort((x, y) => x.w - y.w) // foreground drawn last
   }
 
+  // ---- market detail route: #/market/<id> (hash routing works on GitHub Pages)
+  const readHash = () => window.location.hash.match(/^#\/market\/(.+)$/)?.[1] ?? null
+  const [marketId, setMarketId] = useState<string | null>(readHash)
+  useEffect(() => {
+    const onHash = () => setMarketId(readHash())
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+  const toPanel = () => layout && window.scrollTo({ top: layout.panel.y, behavior: "smooth" })
+  const openMarket = (id: string) => {
+    window.location.hash = `/market/${id}`
+    toPanel()
+  }
+  const closeMarket = () => {
+    history.pushState(null, '', window.location.pathname + window.location.search)
+    setMarketId(null)
+  }
+  const prove = (id: string) => {
+    account.setMarket(id)
+    account.setTab('submit')
+    setMode('account')
+    toPanel()
+  }
+
   const pick = (next: Mode) => {
     setMode(next)
     if (layout) window.scrollTo({ top: layout.panel.y, behavior: 'smooth' })
@@ -193,8 +218,14 @@ function App() {
             <AccountBar s={account} />
           </div>
         </div>
-        <div className="page" key={mode}>
-          {mode === 'browse' ? <BrowseList s={browse} /> : <AccountContent s={account} />}
+        <div className="page" key={mode + (marketId ?? '')}>
+          {mode === 'account' ? (
+            <AccountContent s={account} />
+          ) : marketId ? (
+            <MarketPage key={marketId} id={marketId} onBack={closeMarket} onProve={prove} />
+          ) : (
+            <BrowseList s={browse} onOpen={openMarket} />
+          )}
         </div>
       </section>
     </>

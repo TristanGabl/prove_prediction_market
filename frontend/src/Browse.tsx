@@ -87,13 +87,13 @@ export function BrowseBar({ s }: { s: BrowseState }) {
   )
 }
 
-export function BrowseList({ s }: { s: BrowseState }) {
+export function BrowseList({ s, onOpen }: { s: BrowseState; onOpen: (id: string) => void }) {
   return (
     <ul className="list">
       {s.results.map((m) => {
         const pct = Math.round(m.prob * 100)
         return (
-          <li key={m.id} className={m.status !== 'open' ? 'resolved' : ''}>
+          <li key={m.id} className={m.status !== 'open' ? 'resolved' : ''} onClick={() => onOpen(m.id)}>
             <div className="name">
               <span className="t">{m.title}</span>
               <code>{m.statement}</code>
