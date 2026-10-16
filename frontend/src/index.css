@@ -109,7 +109,7 @@ html, body, #root { margin: 0; min-height: 100%; background: var(--bg); }
 @media (prefers-reduced-motion: reduce) { .shape { animation: none; opacity: .8; transform: rotate(var(--r)); } }
 
 /* ---------- panel + speech-bubble outline ---------- */
-.hero { height: calc(100vh - 72px); min-height: 560px; z-index: 2; }
+.hero { height: calc(100vh - 72px); height: calc(100svh - 72px); min-height: 560px; z-index: 2; }
 .tab-hint { position: absolute; left: calc(100% + 16px); top: 50%; transform: translateY(-50%); white-space: nowrap; font-size: .75rem; color: #aaa69e; pointer-events: none; }
 @media (max-width: 640px) { .tab-hint { display: none; } }
 kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; }
@@ -213,9 +213,8 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
 
 @media (max-width: 760px) {
   .panel { padding: 0 16px 40px; border-radius: 20px 20px 0 0; }
-  .search, .morph { width: 100%; }
   .list li { grid-template-columns: 1fr 60px 50px; }
-  .fld, .list li .num:not(.when) { display: none; }
+  .list li .fld, .list li .num:not(.when) { display: none; }
 }
 
 /* ---------- own account ---------- */
@@ -257,3 +256,49 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
   .panel { padding: 0 16px 40px; }
 }
 
+
+/* ---------- phones ---------- */
+@media (max-width: 640px) {
+  .hero { min-height: 520px; padding: 0 20px; }
+  .title { font-size: clamp(2.4rem, 12.5vw, 3.6rem); }
+  .title .market { margin-top: .2em; }
+  .stage { width: 100%; }
+  .shape { font-size: 70% !important; }
+  .shape:nth-child(4n) { display: none; }
+  .tagline { margin-top: 1.6rem; font-size: .98rem; line-height: 1.55; }
+  .stats-line { font-size: .68rem; text-align: center; line-height: 1.5; padding: 0 8px; }
+  .cta { margin-top: 1.4rem; gap: .5rem; }
+  .btn { padding: .65rem 1.1rem; font-size: .95rem; }
+
+  .panel { padding: 0 12px 40px; }
+  .list-head { padding: 12px 0 10px; }
+  /* one swipeable row of controls instead of a tall wrapped header */
+  .bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -12px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .bar::-webkit-scrollbar { display: none; }
+  .bar > * { flex-shrink: 0; }
+  .search { width: 64vw; font-size: 16px; } /* 16px keeps iOS from zooming on focus */
+  .seg button { padding: 0 11px; }
+  .bar select { font-size: 16px; }
+
+  .page { margin-top: 10px; padding: 2px 12px; border-radius: 16px; }
+  .list li { gap: 10px; padding: 12px 2px; }
+  .name .t { font-size: 1.08rem; }
+  .name code { font-size: .66rem; }
+
+  .draft { padding: 14px 0; }
+  .draft-head { flex-direction: column; align-items: start; gap: 4px; }
+  .draft-head h2 { font-size: 1.6rem; }
+  .editor { font-size: 14px; line-height: 1.55; border-radius: 10px; } /* textarea ≥16px avoids iOS zoom; gutter matches */
+  .gutter { padding: 12px 6px; }
+  .editor textarea, .gutter { font-size: 16px; }
+  .editor textarea { padding: 12px 10px; }
+  .draft-foot .btn { flex: 1; }
+  .stake { min-width: 100%; }
+}
