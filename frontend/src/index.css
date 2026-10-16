@@ -79,7 +79,7 @@ html, body, #root { margin: 0; min-height: 100%; background: var(--bg); }
   cursor: pointer;
   background: var(--ink);
   color: var(--bg);
-  transition: transform .15s, background .15s;
+  transition: transform .15s;
 }
 .btn:hover { transform: translateY(-1px); }
 .btn.ghost { background: transparent; color: var(--ink); }

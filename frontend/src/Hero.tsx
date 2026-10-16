@@ -28,7 +28,8 @@ const SHAPES: Shape[] = [
 
 export type Mode = 'browse' | 'account'
 
-const mixBg = (dark: number) => `color-mix(in srgb, var(--ink) ${dark * 100}%, var(--bg))`
+const mixBg = (dark: number) => `color-mix(in srgb, var(--ink) ${(clamp01(dark) * 100).toFixed(1)}%, var(--bg))`
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
 
 /**
  * Welcome block. `m` blends between modes (0 = browse active, 1 = account active).
