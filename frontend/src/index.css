@@ -11,6 +11,7 @@
   -webkit-font-smoothing: antialiased;
 }
 * { box-sizing: border-box; }
+html, body { overscroll-behavior: none; }
 html, body, #root { margin: 0; min-height: 100%; background: var(--bg); }
 
 .hero {
@@ -107,7 +108,8 @@ html, body, #root { margin: 0; min-height: 100%; background: var(--bg); }
 
 /* ---------- panel + speech-bubble outline ---------- */
 .hero { height: calc(100vh - 72px); min-height: 560px; z-index: 2; }
-.tab-hint { position: relative; z-index: 1; margin-top: 14px; font-size: .75rem; color: #aaa69e; }
+.tab-hint { grid-area: 1 / 1; justify-self: end; align-self: center; font-size: .75rem; color: #9d97b3; pointer-events: none; }
+@media (max-width: 1100px) { .tab-hint { display: none; } }
 kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; }
 .bubble { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: visible; }
 .panel {

@@ -28,7 +28,7 @@ const SHAPES: Shape[] = [
 
 export type Mode = 'browse' | 'account'
 
-const mixBg = (dark: number) => `color-mix(in srgb, var(--ink) ${dark * 100}%, transparent)`
+const mixBg = (dark: number) => `color-mix(in srgb, var(--ink) ${dark * 100}%, var(--bg))`
 
 /**
  * Welcome block. `m` blends between modes (0 = browse active, 1 = account active).
@@ -90,7 +90,6 @@ export default function Hero({
           Own account
         </button>
       </div>
-      <div className="tab-hint"><kbd>tab</kbd> to switch</div>
     </main>
   )
 }

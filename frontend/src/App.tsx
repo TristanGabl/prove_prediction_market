@@ -43,6 +43,8 @@ function tail(T: number, a: Rect, L: number, R: number) {
   return {
     lf,
     rf,
+    // the two sides alone (no segment behind the button), for the dashed background bubble
+    sides: `M${lf},${T} C${lf + (ax1 - lf) * 0.6},${T} ${ax1},${ay + h * 0.5} ${ax1},${ay} M${ax2},${ay} C${ax2},${ay + h * 0.5} ${rf - (rf - ax2) * 0.6},${T} ${rf},${T}`,
     d: `C${lf + (ax1 - lf) * 0.6},${T} ${ax1},${ay + h * 0.5} ${ax1},${ay} L${ax2},${ay} C${ax2},${ay + h * 0.5} ${rf - (rf - ax2) * 0.6},${T} ${rf},${T}`,
   }
 }
@@ -156,7 +158,7 @@ function App() {
         key,
         w: key === 'browse' ? 1 - m : m,
         outline: outlinePath(L, R, T, vp.h + 4, t),
-        ghost: t ? `M${t.lf},${T} ${t.d}` : '',
+        ghost: t ? t.sides : '',
       })
     }
     bubbles.sort((x, y) => x.w - y.w) // foreground drawn last
@@ -235,6 +237,7 @@ function App() {
               <span style={{ opacity: clamp(m * 2 - 1) }}>{q.labels[1]}</span>
             </div>
           ))}
+          <div className="tab-hint"><kbd>tab</kbd> to switch</div>
         </div>
         <div className="page" key={mode}>
           {mode === 'browse' ? <BrowseList s={browse} /> : <AccountContent s={account} />}
