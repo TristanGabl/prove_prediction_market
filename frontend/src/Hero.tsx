@@ -89,6 +89,7 @@ export default function Hero({
         <button ref={accountRef} className="btn" style={btn(m)} onClick={() => onPick('account')}>
           Own account
         </button>
+        <div className="tab-hint"><kbd>tab</kbd> to switch</div>
       </div>
     </main>
   )

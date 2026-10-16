@@ -246,7 +246,6 @@ function App() {
               <span style={{ opacity: clamp(m * 2 - 1) }}>{q.labels[1]}</span>
             </div>
           ))}
-          <div className="tab-hint"><kbd>tab</kbd> to switch</div>
         </div>
         <div className="page" key={mode}>
           {mode === 'browse' ? <BrowseList s={browse} /> : <AccountContent s={account} />}
