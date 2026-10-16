@@ -4,10 +4,8 @@ import { BrowseBar, BrowseList, BrowseStats, useBrowse } from './Browse'
 import { AccountBar, AccountContent, AccountStats, useAccount } from './Account'
 
 type Rect = { x: number; y: number; w: number; h: number }
-type Control = Rect & { label: string; dark: number }
 type Layout = {
   btn: Record<Mode, Rect> // hero buttons, document coords
-  bars: Record<Mode, Control[]> // toolbar controls, relative to the sticky header
   panel: { x: number; y: number; w: number }
 }
 
@@ -17,12 +15,6 @@ const BLEND_MS = 550
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 const ease = (t: number) => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2)
-const lerpRect = (a: Rect, b: Rect, t: number): Rect => ({
-  x: lerp(a.x, b.x, t),
-  y: lerp(a.y, b.y, t),
-  w: lerp(a.w, b.w, t),
-  h: lerp(a.h, b.h, t),
-})
 
 function docRect(el: Element): Rect {
   const r = el.getBoundingClientRect()
@@ -73,23 +65,10 @@ function App() {
   useLayoutEffect(() => {
     const measure = () => {
       const panel = panelRef.current
-      const head = headRef.current
-      if (!panel || !head || !browseBtn.current || !accountBtn.current) return
-      const hr = head.getBoundingClientRect()
-      const bar = (which: Mode): Control[] =>
-        Array.from(head.querySelectorAll(`[data-bar=${which}] > *`)).map((el) => {
-          const r = el.getBoundingClientRect()
-          const label =
-            el instanceof HTMLSelectElement ? `${el.selectedOptions[0]?.text ?? ''}  ⌄`
-            : el instanceof HTMLInputElement ? el.placeholder
-            : el.children.length ? Array.from(el.children, (c) => c.textContent).join('   ')
-            : el.textContent ?? ''
-          return { x: r.left - hr.left, y: r.top - hr.top, w: r.width, h: r.height, label, dark: el.matches('.btn') ? 1 : 0 }
-        })
+      if (!panel || !browseBtn.current || !accountBtn.current) return
       const pr = docRect(panel)
       setLayout({
         btn: { browse: docRect(browseBtn.current), account: docRect(accountBtn.current) },
-        bars: { browse: bar('browse'), account: bar('account') },
         panel: { x: pr.x, y: pr.y, w: pr.w },
       })
       setVp({ w: window.innerWidth, h: window.innerHeight })
@@ -107,8 +86,7 @@ function App() {
       window.removeEventListener('resize', measure)
       window.removeEventListener('scroll', measure)
     }
-    // labels depend on the selected filter values; re-measure when they change
-  }, [browse.field, browse.sort, account.market])
+  }, [])
 
   useEffect(() => {
     let raf = 0
@@ -149,8 +127,6 @@ function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const settled = m === 0 || m === 1
-
   // ---- speech bubbles: each button has its own fixed bubble. On Tab the focused one fades from
   // the filled foreground style to a dashed background outline, and the other does the reverse.
   const bubbles: { key: Mode; w: number; outline: string; ghost: string }[] = []
@@ -173,27 +149,15 @@ function App() {
     bubbles.sort((x, y) => x.w - y.w) // foreground drawn last
   }
 
-  // ---- toolbar morph: each control reshapes into its counterpart on the other page
-  const pieces =
-    layout && !settled
-      ? layout.bars.browse.map((a, k) => {
-          const b = layout.bars.account[k]
-          const r = lerpRect(a, b, m)
-          const bump = Math.sin(Math.PI * m)
-          return {
-            rect: r,
-            dark: lerp(a.dark, b.dark, m),
-            labels: [a.label, b.label] as const,
-            transform: `translateY(${-bump * 6}px) scale(${1 - bump * 0.04})`,
-          }
-        })
-      : []
-
   const pick = (next: Mode) => {
     setMode(next)
     if (layout) window.scrollTo({ top: layout.panel.y, behavior: 'smooth' })
   }
-  const barVisible = (which: Mode) => settled && (which === 'browse' ? m === 0 : m === 1)
+  // toolbars simply crossfade along with the page; only the focused one is interactive
+  const barStyle = (which: Mode) => {
+    const w = which === 'browse' ? 1 - m : m
+    return { opacity: w, pointerEvents: w > 0.5 ? ('auto' as const) : ('none' as const) }
+  }
 
   return (
     <>
@@ -222,30 +186,12 @@ function App() {
 
       <section className="panel" ref={panelRef}>
         <div className="list-head" ref={headRef}>
-          <div className="bar" data-bar="browse" style={{ visibility: barVisible('browse') ? 'visible' : 'hidden' }}>
+          <div className="bar" data-bar="browse" style={barStyle('browse')}>
             <BrowseBar s={browse} />
           </div>
-          <div className="bar" data-bar="account" style={{ visibility: barVisible('account') ? 'visible' : 'hidden' }}>
+          <div className="bar" data-bar="account" style={barStyle('account')}>
             <AccountBar s={account} />
           </div>
-          {pieces.map((q, k) => (
-            <div
-              key={k}
-              className="morph"
-              style={{
-                left: q.rect.x,
-                top: q.rect.y,
-                width: q.rect.w,
-                height: q.rect.h,
-                background: `color-mix(in srgb, var(--ink) ${q.dark * 100}%, #fff)`,
-                color: q.dark > 0.5 ? 'var(--bg)' : 'var(--ink)',
-                transform: q.transform,
-              }}
-            >
-              <span style={{ opacity: clamp(1 - m * 2) }}>{q.labels[0]}</span>
-              <span style={{ opacity: clamp(m * 2 - 1) }}>{q.labels[1]}</span>
-            </div>
-          ))}
         </div>
         <div className="page" key={mode}>
           {mode === 'browse' ? <BrowseList s={browse} /> : <AccountContent s={account} />}

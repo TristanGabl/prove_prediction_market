@@ -142,7 +142,7 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
   background: #f1ecfd;
   border-bottom: none;
 }
-.bar { grid-area: 1 / 1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.bar { grid-area: 1 / 1; transition: none; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .btn.pill { height: 40px; padding: 0 18px; font-size: .9rem; }
 .page {
   margin-top: 16px;
@@ -176,7 +176,7 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
 }
 .morph span { grid-area: 1 / 1; }
 .morph span { padding: 0 14px; font-weight: 400; font-size: .85rem; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.seg { display: flex; border: 1.5px solid var(--ink); border-radius: 999px; overflow: hidden; height: 40px; }
+.seg { background: #fff; display: flex; border: 1.5px solid var(--ink); border-radius: 999px; overflow: hidden; height: 40px; }
 .seg button { font: inherit; font-size: .85rem; border: none; background: none; padding: 0 14px; cursor: pointer; }
 .seg button + button { border-left: 1px solid #e6e3dc; }
 .seg button.on { background: var(--ink); color: var(--bg); }
