@@ -1,4 +1,4 @@
-import type { CSSProperties, RefObject } from 'react'
+import type { CSSProperties, ReactNode, RefObject } from 'react'
 
 type Shape = { x: number; y: number; s: number; r: number; lilac?: boolean }
 
@@ -39,22 +39,18 @@ export default function Hero({
   browseRef,
   accountRef,
   m,
-  started,
-  fade,
+  stats,
   onPick,
 }: {
   browseRef: RefObject<HTMLButtonElement | null>
   accountRef: RefObject<HTMLButtonElement | null>
   m: number
-  started: boolean
-  fade: number // 0–1, how far the inactive button has faded out
+  stats: ReactNode
   onPick: (mode: Mode) => void
 }) {
   const btn = (dark: number): CSSProperties => ({
     background: mixBg(dark),
     color: dark > 0.5 ? 'var(--bg)' : 'var(--ink)',
-    opacity: started ? (1 - dark) * (1 - fade) : 1,
-    pointerEvents: started && fade > 0.5 ? 'none' : undefined,
   })
   return (
     <main className="hero">
@@ -85,6 +81,7 @@ export default function Hero({
         Bet on whether a theorem will be proven. Submissions are checked by <code>Lean</code>, and
         markets resolve the moment a proof compiles.
       </p>
+      <div className="stats-line">{stats}</div>
       <div className="cta">
         <button ref={browseRef} className="btn" style={btn(1 - m)} onClick={() => onPick('browse')}>
           Browse markets
@@ -93,7 +90,7 @@ export default function Hero({
           Own account
         </button>
       </div>
-      <div className="tab-hint" style={{ opacity: 1 - fade }}><kbd>tab</kbd> to switch</div>
+      <div className="tab-hint"><kbd>tab</kbd> to switch</div>
     </main>
   )
 }
