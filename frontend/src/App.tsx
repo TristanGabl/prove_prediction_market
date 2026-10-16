@@ -59,8 +59,8 @@ function App() {
 
   const [mode, setMode] = useState<Mode>('browse')
   const [m, setM] = useState(0) // animated blend: 0 = browse, 1 = account
-  const [scroll, setScroll] = useState(window.scrollY)
-  const [vp, setVp] = useState({ w: window.innerWidth, h: window.innerHeight })
+  const [doc, setDoc] = useState({ w: window.innerWidth, h: window.innerHeight })
+  // document size — the bubble SVG is laid out in document coordinates so it scrolls natively
   const [layout, setLayout] = useState<Layout | null>(null)
 
   useLayoutEffect(() => {
@@ -72,7 +72,7 @@ function App() {
         btn: { browse: docRect(browseBtn.current), account: docRect(accountBtn.current) },
         panel: { x: pr.x, y: pr.y, w: pr.w },
       })
-      setVp({ w: window.innerWidth, h: window.innerHeight })
+      setDoc({ w: document.documentElement.clientWidth, h: pr.y + pr.h })
     }
     measure()
     document.fonts?.ready.then(measure)
@@ -81,23 +81,12 @@ function App() {
     ro.observe(document.body)
     if (panelRef.current) ro.observe(panelRef.current)
     window.addEventListener('resize', measure)
-    window.addEventListener('scroll', measure, { passive: true })
     return () => {
       ro.disconnect()
       window.removeEventListener('resize', measure)
-      window.removeEventListener('scroll', measure)
     }
   }, [])
 
-  useEffect(() => {
-    let raf = 0
-    const onScroll = () => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => setScroll(window.scrollY))
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   // ---- mode blend animation (restartable mid-flight)
   const mRef = useRef(0)
@@ -135,15 +124,15 @@ function App() {
   if (layout) {
     const L = layout.panel.x
     const R = L + layout.panel.w
-    const T = layout.panel.y - scroll
-    base = outlinePath(L, R, T, vp.h + 4, null) // keeps the panel opaque mid-fade
+    const T = layout.panel.y
+    base = outlinePath(L, R, T, doc.h, null) // keeps the panel opaque mid-fade
     for (const key of ['browse', 'account'] as Mode[]) {
       const b = layout.btn[key]
-      const t = tail(T, { ...b, y: b.y - scroll }, L, R)
+      const t = tail(T, b, L, R)
       bubbles.push({
         key,
         w: key === 'browse' ? 1 - m : m,
-        outline: outlinePath(L, R, T, vp.h + 4, t),
+        outline: outlinePath(L, R, T, doc.h, t),
         ghost: t ? t.sides : '',
       })
     }
@@ -186,7 +175,7 @@ function App() {
 
   return (
     <>
-      <svg className="bubble" width={vp.w} height={vp.h} aria-hidden>
+      <svg className="bubble" width={doc.w} height={doc.h} aria-hidden>
         <path d={base} fill={PANEL_BG} stroke="#cfc4f2" strokeWidth={1.25} />
         {bubbles.map((bb) => (
           <g key={bb.key}>
