@@ -46,7 +46,7 @@ html, body, #root { margin: 0; min-height: 100%; background: var(--bg); }
   color: var(--lilac-deep);
   font-size: 0.55em;
   margin-left: -1.6em;
-  margin-top: 0.12em;
+  margin-top: -0.18em;
 }
 .tagline {
   position: relative;
@@ -263,7 +263,7 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
 @media (max-width: 640px) {
   .hero { height: auto; min-height: 0; padding: 88px 20px 110px; }
   .title { font-size: clamp(2.4rem, 12.5vw, 3.6rem); }
-  .title .market { margin-top: .2em; }
+  .title .market { margin-top: -0.1em; }
   .stage { width: 100%; }
   .shape { font-size: 70% !important; }
   .shape:nth-child(4n) { display: none; }

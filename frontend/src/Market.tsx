@@ -79,7 +79,7 @@ export default function MarketPage({ id, onBack, onProve }: { id: string; onBack
       <button className="link back" onClick={onBack}>← All markets</button>
 
       <header className="mk-head">
-        <span className="fld">{m.field} · difficulty {'◆'.repeat(m.difficulty)}{'◇'.repeat(5 - m.difficulty)}</span>
+        <span className="fld">{m.field}</span>
         <h2>{m.title}</h2>
         <pre className="mk-stmt">theorem {m.id.replace(/-/g, '_')} :{'\n'}    {m.statement}</pre>
       </header>
