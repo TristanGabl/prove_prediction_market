@@ -176,7 +176,7 @@ function SubmitDraft({ s }: { s: AccountState }) {
 
       <div className="draft-foot">
         <label className="stake">
-          Back your own proof with <b>{usd(stake)}</b> on Yes
+          <span>Back your own proof with <b>{usd(stake)}</b> on Yes</span>
           <input type="range" min={0} max={5000} step={100} value={stake} onChange={(e) => setStake(+e.target.value)} />
         </label>
         <button className="btn ghost" onClick={() => setCode(template(s.market))}>Reset</button>

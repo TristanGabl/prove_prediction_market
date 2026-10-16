@@ -259,7 +259,7 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
 
 /* ---------- phones ---------- */
 @media (max-width: 640px) {
-  .hero { min-height: 520px; padding: 0 20px; }
+  .hero { height: auto; min-height: 0; padding: 88px 20px 110px; }
   .title { font-size: clamp(2.4rem, 12.5vw, 3.6rem); }
   .title .market { margin-top: .2em; }
   .stage { width: 100%; }
