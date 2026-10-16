@@ -143,10 +143,12 @@ function App() {
   // ---- speech bubbles: each button has its own fixed bubble. On Tab the focused one fades from
   // the filled foreground style to a dashed background outline, and the other does the reverse.
   const bubbles: { key: Mode; w: number; outline: string; ghost: string }[] = []
+  let base = ''
   if (layout) {
     const L = layout.panel.x
     const R = L + layout.panel.w
     const T = layout.panel.y - scroll
+    base = outlinePath(L, R, T, vp.h + 4, null) // keeps the panel opaque mid-fade
     for (const key of ['browse', 'account'] as Mode[]) {
       const b = layout.btn[key]
       const t = tail(T, { ...b, y: b.y - scroll }, L, R)
@@ -185,6 +187,7 @@ function App() {
   return (
     <>
       <svg className="bubble" width={vp.w} height={vp.h} aria-hidden>
+        <path d={base} fill={PANEL_BG} stroke="#cfc4f2" strokeWidth={1.25} />
         {bubbles.map((bb) => (
           <g key={bb.key}>
             <path d={bb.ghost} fill="none" stroke="#b3aec4" strokeWidth={1.25} strokeDasharray="6 5" opacity={1 - bb.w} />
