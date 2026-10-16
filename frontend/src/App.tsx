@@ -96,8 +96,17 @@ function App() {
     }
     measure()
     document.fonts?.ready.then(measure)
+    // any layout shift (fonts, stats text, content swaps) moves the buttons — re-measure on all of them
+    const ro = new ResizeObserver(() => measure())
+    ro.observe(document.body)
+    if (panelRef.current) ro.observe(panelRef.current)
     window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
+    window.addEventListener('scroll', measure, { passive: true })
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', measure)
+      window.removeEventListener('scroll', measure)
+    }
     // labels depend on the selected filter values; re-measure when they change
   }, [browse.field, browse.sort, account.market])
 
