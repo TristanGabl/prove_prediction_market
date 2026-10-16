@@ -29,23 +29,29 @@ function docRect(el: Element): Rect {
   return { x: r.left + window.scrollX, y: r.top + window.scrollY, w: r.width, h: r.height }
 }
 
-/** Panel outline (viewport coords) with a flat top edge. */
-function panelPath(L: number, R: number, T: number, B: number) {
-  const r = 28
-  return `M${L},${B} V${T + r} Q${L},${T} ${L + r},${T} H${R - r} Q${R},${T} ${R},${T + r} V${B} Z`
-}
-
-/** Speech-bubble tail rising from the panel's top edge to meet the sides of `a`. */
-function tailPath(T: number, a: Rect, L: number, R: number) {
-  const ax1 = a.x - 6
-  const ax2 = a.x + a.w + 6
+/** Rising tail from the panel's top edge (y = T) to the pill `a`, meeting its sides at mid-height.
+ * Returned as path segments that start at the left foot and end at the right foot, both tangent to the edge. */
+function tail(T: number, a: Rect, L: number, R: number) {
+  const ax1 = a.x
+  const ax2 = a.x + a.w
   const ay = a.y + a.h / 2
   const h = T - ay
-  if (h <= 2) return ''
+  if (h <= 2) return null
   const sp = Math.min(h * 0.6, 180)
   const lf = Math.max(L + 28, ax1 - sp)
   const rf = Math.min(R - 28, ax2 + sp)
-  return `M${lf},${T + 1} C${lf + (ax1 - lf) * 0.6},${T} ${ax1},${ay + h * 0.5} ${ax1},${ay} L${ax2},${ay} C${ax2},${ay + h * 0.5} ${rf - (rf - ax2) * 0.6},${T} ${rf},${T + 1}`
+  return {
+    lf,
+    rf,
+    d: `C${lf + (ax1 - lf) * 0.6},${T} ${ax1},${ay + h * 0.5} ${ax1},${ay} L${ax2},${ay} C${ax2},${ay + h * 0.5} ${rf - (rf - ax2) * 0.6},${T} ${rf},${T}`,
+  }
+}
+
+/** Panel outline (viewport coords); the focused tail is part of the same stroke so it joins seamlessly. */
+function outlinePath(L: number, R: number, T: number, B: number, t: ReturnType<typeof tail>) {
+  const r = 28
+  const top = t ? `H${t.lf} ${t.d} ` : ''
+  return `M${L},${B} V${T + r} Q${L},${T} ${L + r},${T} ${top}H${R - r} Q${R},${T} ${R},${T + r} V${B} Z`
 }
 
 function App() {
@@ -134,19 +140,19 @@ function App() {
 
   const settled = m === 0 || m === 1
 
-  // ---- speech bubbles: solid for the focused page, faint + dashed for the other
+  // ---- speech bubbles: the focused tail is part of the panel outline and slides between the
+  // buttons on Tab; the other button gets a faint dashed tail drawn underneath
   let outline = ''
-  const tails: { d: string; w: number }[] = []
+  let ghost = ''
   if (layout) {
     const L = layout.panel.x
     const R = L + layout.panel.w
     const T = layout.panel.y - scroll
-    outline = panelPath(L, R, T, vp.h + 4)
-    for (const which of ['browse', 'account'] as Mode[]) {
-      const b = layout.btn[which]
-      tails.push({ d: tailPath(T, { ...b, y: b.y - scroll }, L, R), w: which === 'browse' ? 1 - m : m })
-    }
-    tails.sort((a, b) => a.w - b.w) // focused tail drawn last, on top
+    const at = (r: Rect) => ({ ...r, y: r.y - scroll })
+    const focused = tail(T, at(lerpRect(layout.btn.browse, layout.btn.account, m)), L, R)
+    const other = tail(T, at(lerpRect(layout.btn.account, layout.btn.browse, m)), L, R)
+    outline = outlinePath(L, R, T, vp.h + 4, focused)
+    if (other) ghost = `M${other.lf},${T} ${other.d}`
   }
 
   // ---- toolbar morph: each control reshapes into its counterpart on the other page
@@ -174,18 +180,8 @@ function App() {
   return (
     <>
       <svg className="bubble" width={vp.w} height={vp.h} aria-hidden>
-        <path d={outline} fill={PANEL_BG} stroke="#e4e1d9" strokeWidth={1} />
-        {tails.map((t, i) => (
-          <path
-            key={i}
-            d={t.d}
-            fill={PANEL_BG}
-            fillOpacity={lerp(0.35, 1, t.w)}
-            stroke={t.w > 0.5 ? '#e4e1d9' : '#ebe8e1'}
-            strokeWidth={1}
-            strokeDasharray={t.w > 0.5 ? undefined : '5 5'}
-          />
-        ))}
+        <path d={ghost} fill={PANEL_BG} fillOpacity={0.5} stroke="#e4e1d9" strokeWidth={1} strokeDasharray="5 5" />
+        <path d={outline} fill={PANEL_BG} stroke="#e0ddd5" strokeWidth={1} strokeLinejoin="round" />
       </svg>
 
       <Hero
