@@ -137,8 +137,8 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
   z-index: 5;
   display: grid;
   padding: 16px 0 14px;
-  background: #faf9f5;
-  border-bottom: 1px solid #eeebe4;
+  background: #f1ecfd;
+  border-bottom: 1px solid #ddd3f7;
 }
 .bar { grid-area: 1 / 1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .btn.pill { height: 40px; padding: 0 18px; font-size: .9rem; }
@@ -183,10 +183,10 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
   gap: 16px;
   align-items: center;
   padding: 14px 8px;
-  border-bottom: 1px solid #ece9e2;
+  border-bottom: 1px solid #e0d8f6;
   cursor: pointer;
 }
-.list li:hover { background: var(--lilac-soft); }
+.list li:hover { background: #e4dafb; }
 .list li.resolved { color: var(--muted); }
 .name { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .name .t { font-family: 'Instrument Serif', serif; font-size: 1.3rem; line-height: 1.1; }

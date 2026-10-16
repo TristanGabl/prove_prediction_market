@@ -11,7 +11,7 @@ type Layout = {
   panel: { x: number; y: number; w: number }
 }
 
-const PANEL_BG = '#faf9f5'
+const PANEL_BG = '#f1ecfd'
 const BLEND_MS = 550
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
@@ -180,8 +180,8 @@ function App() {
   return (
     <>
       <svg className="bubble" width={vp.w} height={vp.h} aria-hidden>
-        <path d={ghost} fill={PANEL_BG} fillOpacity={0.5} stroke="#e4e1d9" strokeWidth={1} strokeDasharray="5 5" />
-        <path d={outline} fill={PANEL_BG} stroke="#e0ddd5" strokeWidth={1} strokeLinejoin="round" />
+        <path d={ghost} fill="none" stroke="#b3aec4" strokeWidth={1.25} strokeDasharray="6 5" />
+        <path d={outline} fill={PANEL_BG} stroke="#cfc4f2" strokeWidth={1.25} strokeLinejoin="round" />
       </svg>
 
       <Hero
