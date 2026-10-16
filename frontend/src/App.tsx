@@ -10,11 +10,11 @@ type Layout = {
 }
 
 const PANEL_BG = '#f1ecfd'
-const BLEND_MS = 550
+const BLEND_MS = 220
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-const ease = (t: number) => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2)
+const ease = (t: number) => 1 - (1 - t) ** 3 // ease-out: starts fast, settles softly
 
 function docRect(el: Element): Rect {
   const r = el.getBoundingClientRect()

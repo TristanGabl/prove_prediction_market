@@ -151,7 +151,7 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
   border: 1px solid #ddd3f7;
   border-radius: 22px;
   box-shadow: 0 1px 0 #e6def9, 0 12px 32px -18px rgba(90, 70, 160, .25);
-  animation: pagein .35s ease-out;
+  animation: pagein .2s ease-out;
 }
 @keyframes pagein { from { opacity: 0; transform: translateY(8px); } }
 .search, .morph {
