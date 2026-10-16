@@ -5,7 +5,9 @@
   --lilac: #b9a7f0;
   --lilac-soft: #e6defc;
   --lilac-deep: #7c66d6;
-  font-family: 'Inter', system-ui, sans-serif;
+  --serif: Georgia, 'Gelasio', 'Times New Roman', serif;
+  font-family: var(--serif);
+  font-variant-numeric: oldstyle-nums;
   color: var(--ink);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
@@ -28,11 +30,11 @@ html, body, #root { margin: 0; min-height: 100%; background: var(--bg); }
 .title {
   position: relative;
   z-index: 1;
-  font-family: 'Instrument Serif', serif;
+  font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(3rem, 10vw, 8.5rem);
-  line-height: 0.9;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.6rem, 7.5vw, 6.5rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
   margin: 0;
   text-align: center;
 }
@@ -87,7 +89,7 @@ html, body, #root { margin: 0; min-height: 100%; background: var(--bg); }
 .shape {
   position: absolute;
   line-height: 1;
-  font-family: 'Instrument Serif', 'STIX Two Math', 'Cambria Math', serif;
+  font-family: var(--serif);
   color: var(--ink);
   opacity: 0;
   pointer-events: none;
@@ -200,7 +202,7 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
 .list li:last-child { border-bottom: none; }
 .list li.resolved { color: var(--muted); }
 .name { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.name .t { font-family: 'Instrument Serif', serif; font-size: 1.3rem; line-height: 1.1; }
+.name .t { font-family: var(--serif); font-size: 1.3rem; line-height: 1.1; }
 .name code { font-family: ui-monospace, monospace; font-size: .72rem; color: #9a978f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fld { font-size: .75rem; color: var(--muted); }
 .pct { position: relative; font-weight: 500; padding-bottom: 6px; }
@@ -228,7 +230,7 @@ kbd { font: inherit; border: 1px solid #cfccc4; border-bottom-width: 2px; border
 
 .draft { padding: 22px 0; display: flex; flex-direction: column; gap: 14px; }
 .draft-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; }
-.draft-head h2 { margin: 4px 0 0; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 2.2rem; line-height: 1; }
+.draft-head h2 { margin: 4px 0 0; font-family: var(--serif); font-weight: 400; font-size: 2.2rem; line-height: 1; }
 .editor {
   display: flex;
   border: 1.5px solid var(--ink);
